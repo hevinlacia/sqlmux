@@ -16,7 +16,7 @@ DEFAULT_BASE_PORT = int(os.environ.get("SQLMUX_BASE_PORT", "13306"))
 # PRO 环境默认不启动,serve --envs 显式列出才监听。
 DEFAULT_ENABLED = ["uat-cn", "uat-sea"]
 
-INSTANCES_FILE = Path(__file__).resolve().parent.parent / "instances.json"
+INSTANCES_FILE = Path(__file__).resolve().parent / "instances.json"
 
 
 @dataclass(frozen=True)

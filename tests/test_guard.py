@@ -2,7 +2,7 @@
 
 import pytest
 
-from sqlmux.guard import GuardError, classify, guard
+from sqlmux.guard import GuardError, classify, extract_db_name, guard
 
 
 class TestClassify:
@@ -84,3 +84,19 @@ class TestGuard:
         with pytest.raises(GuardError) as ei:
             guard("DELETE FROM t")
         assert "Archery" in ei.value.message
+
+    def test_connector_j_leading_comment(self):
+        # Connector/J 建连首条: /* version */SELECT @@session...
+        sql = "/* mysql-connector-java-8.0.28 (Rev) */SELECT  @@session.auto_increment_increment, @@session.character_set_client"
+        assert guard(sql) == "read"
+
+    def test_comment_semicolon_not_multistatement(self):
+        assert guard("/* a;b;c */ SELECT 1") == "read"
+        assert guard("SELECT 1 -- trailing;comment") == "read"
+        assert guard("-- header\nSELECT 1") == "read"
+
+    def test_string_semicolon_not_multistatement(self):
+        assert guard("SELECT * FROM t WHERE note = 'a;b' AND x = \"d;e\"") == "read"
+
+    def test_use_with_leading_comment(self):
+        assert extract_db_name("/* c */ USE `other-db`") == "other-db"
