@@ -11,13 +11,14 @@ MySQL wire protocol 网关:对外说标准 MySQL 协议(127.0.0.1 多端口),对
 
 ## 运行
 
+纯标准库、零依赖，有 python3 即可运行：
+
 ```bash
-uv sync
-uv run sqlmux serve --envs uat-cn,uat-sea   # PRO: --envs 加 pro-cn,pro-sea 显式开启
-uv run sqlmux envs                           # 列出环境与端口映射
+PYTHONPATH=src python3 -m sqlmux envs                          # 列出环境与端口映射
+PYTHONPATH=src python3 -m sqlmux serve --envs uat-cn,uat-sea   # PRO: 显式加 pro-cn,pro-sea
 ```
 
-端口:13306=uat-cn 13307=uat-sea 13308=pro-cn 13309=pro-sea(`SQLMUX_BASE_PORT` 可整体偏移)。
+端口:13306=uat-cn 13307=uat-sea 13308=pro-cn 13309=pro-sea(`SQLMUX_BASE_PORT` 可整体偏移)。**端口与环境固定绑定**(`ENV_PORT_ORDER`),不随 `--envs` 顺序变化。
 
 ## 结构
 

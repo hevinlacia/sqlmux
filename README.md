@@ -23,11 +23,14 @@
 
 ## 运行
 
+零第三方依赖（纯标准库），**有 python3 就能跑**：
+
 ```bash
-uv sync
-uv run sqlmux envs                          # 查看环境/端口映射
-uv run sqlmux serve --envs uat-cn,uat-sea   # 启动网关
+PYTHONPATH=src python3 -m sqlmux envs                          # 查看环境/端口映射
+PYTHONPATH=src python3 -m sqlmux serve --envs uat-cn,uat-sea   # 启动网关
 ```
+
+（也支持 `uv run sqlmux ...`；uv 仅用于开发/测试。）
 
 ## 连接示例(DataGrip / DBeaver / JDBC)
 

@@ -3,9 +3,7 @@ name = "sqlmux"
 version = "0.1.0"
 description = "MySQL wire protocol gateway fronting read-only SQL backends (Archery)"
 requires-python = ">=3.11"
-dependencies = [
-    "httpx>=0.27",
-]
+dependencies = []
 
 [project.scripts]
 sqlmux = "sqlmux.cli:main"
