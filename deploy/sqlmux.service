@@ -8,11 +8,13 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/home/hevin/Developer/tools/sqlmux
-# 端口按 --envs 顺序分配:13306=uat-cn 13307=uat-sea 13308=pro-cn 13309=pro-sea
-# 红线不变:仅 loopback + 只读白名单;PRO 常驻是用户决定(2026-11-09),查询走个人 Archery 账号有审计
+# 端口与环境固定绑定:13306=uat-cn 13307=uat-sea 13308=pro-cn 13309=pro-sea
+# 纯标准库零依赖,直接用系统 python3(不需要 uv/venv)
+# 红线不变:仅 loopback + 只读白名单;PRO 常驻为用户决定,查询走个人 Archery 账号有审计
 Environment=SQLMUX_BASE_PORT=13306
 Environment=AGENT_ARCHERY_URL=https://archery.yunlu-tech.cn
-ExecStart=/bin/sh -c 'exec /usr/bin/mise exec -- uv run sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea'
+Environment=PYTHONPATH=/home/hevin/Developer/tools/sqlmux/src
+ExecStart=/usr/bin/python3 -m sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea
 Restart=on-failure
 RestartSec=3
 NoNewPrivileges=true

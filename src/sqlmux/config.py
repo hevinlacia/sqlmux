@@ -13,6 +13,11 @@ import os
 
 DEFAULT_BASE_PORT = int(os.environ.get("SQLMUX_BASE_PORT", "13306"))
 
+# 环境→端口偏移**固定绑定**，不随 --envs 传入顺序变化。
+# 曾按传入顺序分配，导致 `sqlmux envs`（字母序）与 `serve --envs`（指定序）
+# 对同一环境给出不同端口 → 用户/agent 连错库。固定表是唯一真相。
+ENV_PORT_ORDER = ["uat-cn", "uat-sea", "pro-cn", "pro-sea"]
+
 # PRO 环境默认不启动,serve --envs 显式列出才监听。
 DEFAULT_ENABLED = ["uat-cn", "uat-sea"]
 
@@ -41,16 +46,20 @@ def env_targets(envs: list[str] | None = None) -> list[EnvTarget]:
     instances = _load_instances()
     names = envs if envs is not None else DEFAULT_ENABLED
     targets: list[EnvTarget] = []
-    for idx, env in enumerate(names):
+    for env in names:
         cfg = instances.get(env)
         if not cfg:
             raise SystemExit(
                 f"unknown env '{env}'; valid: {', '.join(sorted(instances))}"
             )
+        if env not in ENV_PORT_ORDER:
+            raise SystemExit(
+                f"env '{env}' 未在 ENV_PORT_ORDER 注册端口;请先在 config.py 固定其端口偏移"
+            )
         targets.append(
             EnvTarget(
                 env=env,
-                port=DEFAULT_BASE_PORT + idx,
+                port=DEFAULT_BASE_PORT + ENV_PORT_ORDER.index(env),
                 instance_name=cfg["instance_name"],
                 db_name=cfg.get("db_name", "wms"),
                 is_pro=env.startswith("pro-"),

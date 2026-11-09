@@ -117,3 +117,19 @@ class TestRewriteForArchery:
         for sql in ["SELECT 1", "SHOW TABLES", "EXPLAIN SELECT 1",
                     "SELECT * FROM t ORDER BY id DESC"]:
             assert rewrite_for_archery(sql) == sql
+
+
+class TestPortBinding:
+    """端口与环境固定绑定，不随 --envs 顺序变化（曾致 envs 与 serve 端口不一致）。"""
+
+    def test_port_independent_of_order(self):
+        from sqlmux.config import env_targets
+        fwd = {t.env: t.port for t in env_targets(["uat-cn", "uat-sea", "pro-cn", "pro-sea"])}
+        rev = {t.env: t.port for t in env_targets(["pro-sea", "pro-cn", "uat-sea", "uat-cn"])}
+        assert fwd == rev
+        assert fwd == {"uat-cn": 13306, "uat-sea": 13307, "pro-cn": 13308, "pro-sea": 13309}
+
+    def test_single_env_keeps_its_port(self):
+        from sqlmux.config import env_targets
+        got = {t.env: t.port for t in env_targets(["uat-sea"])}
+        assert got == {"uat-sea": 13307}

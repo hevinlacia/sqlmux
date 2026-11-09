@@ -4,9 +4,9 @@
 # 用法: deploy/package.sh [版本标识]     # 缺省用 git short HEAD
 # 产物: dist/sqlmux-<ver>.tar.gz(包内顶层目录 sqlmux-<ver>/,worker 侧自动提升一层)
 #
-# 说明:sqlmux 是纯 Python 源码服务,没有编译产物;新机器要运行它只需
-# 源码 + uv(uv run 按 pyproject/uv.lock 现装依赖)。二进制服务(code-map)
-# 走同一通道,只是 kind=binary。
+# 说明:sqlmux 是**纯标准库** Python 服务(零第三方依赖),没有编译产物;
+# 新机器只要源码 + 任意 python3 即可运行,无需 pip/uv/venv。二进制服务
+# (code-map)走同一通道,只是 kind=binary。
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -31,7 +31,7 @@ cat <<MSG
 
 上传到 hub(产物落 hub state 目录,不进备份仓):
   curl -sS -X PUT "$HUB/api/service/artifact?name=sqlmux&version=${VER}&kind=source" \\
-    --data-urlencode "entry=uv run --project . sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea" \\
+    --data-urlencode "entry=PYTHONPATH=src python3 -m sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea" \\
     -H 'Content-Type: application/gzip' \\
     --data-binary @"$OUT"
 
