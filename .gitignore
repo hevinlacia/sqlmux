@@ -1,0 +1,12 @@
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+# env / secrets
+.env
+*.local.env
+# build
+dist/
+*.egg-info/

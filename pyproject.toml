@@ -1,0 +1,23 @@
+[project]
+name = "sqlmux"
+version = "0.1.0"
+description = "MySQL wire protocol gateway fronting read-only SQL backends (Archery)"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+]
+
+[project.scripts]
+sqlmux = "sqlmux.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sqlmux"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]

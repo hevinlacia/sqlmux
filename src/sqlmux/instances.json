@@ -1,0 +1,21 @@
+{
+  "_comment": "与 mysql-archery-query skill 的 instances.json 同构;仅维护实例名与默认库,不含凭证。",
+  "environments": {
+    "uat-cn": {
+      "instance_name": "cwh-uat-wms-polarx",
+      "db_name": "wms"
+    },
+    "uat-sea": {
+      "instance_name": "cwhsea-uat-wms-polarx",
+      "db_name": "wms"
+    },
+    "pro-cn": {
+      "instance_name": "pro-cwh-wms-mysql",
+      "db_name": "wms"
+    },
+    "pro-sea": {
+      "instance_name": "cwhsea-pro-wms-mysql",
+      "db_name": "wms"
+    }
+  }
+}
