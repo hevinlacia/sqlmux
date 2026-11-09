@@ -1,0 +1,37 @@
+tests/test_guard.py
+  08d731b781a7bb1f 1-86
+src/sqlmux/server.py
+  08d731b781a7bb1f 1-180
+pyproject.toml
+  08d731b781a7bb1f 23
+src/sqlmux/archery.py
+  08d731b781a7bb1f 1-190
+src/sqlmux/guard.py
+  08d731b781a7bb1f 21-23,38-43
+tests/test_wire.py
+  08d731b781a7bb1f 1-91
+src/sqlmux/wire.py
+  08d731b781a7bb1f 1-217,223,225-250
+tests/test_e2e.py
+  08d731b781a7bb1f 1-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "bc28cfd956ae35078a00581b764d80929a7324ac",
+  "prompts": {
+    "08d731b781a7bb1f": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1be06-d4f7-75a5-8707-88d64a308fae",
+        "model": "low-model-auto"
+      },
+      "human_author": "hevinlacia <hevinlacia@gmail.com>",
+      "messages": [],
+      "total_additions": 976,
+      "total_deletions": 42,
+      "accepted_lines": 932,
+      "overriden_lines": 4
+    }
+  }
+}
