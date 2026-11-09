@@ -1,19 +1,18 @@
-# ~/.config/systemd/user/sqlmux.service — 安装:
-#   cp deploy/sqlmux.service ~/.config/systemd/user/ && systemctl --user daemon-reload
-#   systemctl --user enable --now sqlmux
 [Unit]
 Description=sqlmux MySQL wire protocol gateway (Archery read-only)
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/hevin/Developer/tools/sqlmux
+# REQ-274:运行来自 hub 分发的产物(panel-services/current 指向当前版本),
+# 不再依赖 sqlmux git 仓库;换版本=切 current 符号链接。
+WorkingDirectory=%h/.local/share/panel-services/sqlmux/current
+Environment=PYTHONPATH=%h/.local/share/panel-services/sqlmux/current/src
 # 端口与环境固定绑定:13306=uat-cn 13307=uat-sea 13308=pro-cn 13309=pro-sea
-# 纯标准库零依赖,直接用系统 python3(不需要 uv/venv)
+# 纯标准库零依赖,直接用系统 python3(不需要 uv/venv 或任何 pip 包)
 # 红线不变:仅 loopback + 只读白名单;PRO 常驻为用户决定,查询走个人 Archery 账号有审计
 Environment=SQLMUX_BASE_PORT=13306
 Environment=AGENT_ARCHERY_URL=https://archery.yunlu-tech.cn
-Environment=PYTHONPATH=/home/hevin/Developer/tools/sqlmux/src
 ExecStart=/usr/bin/python3 -m sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea
 Restart=on-failure
 RestartSec=3
