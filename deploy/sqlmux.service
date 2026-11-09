@@ -8,10 +8,11 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/home/hevin/Developer/tools/sqlmux
-# 红线:仅 loopback;PRO 环境不进 --envs(显式临时开,不落 unit)
+# 端口按 --envs 顺序分配:13306=uat-cn 13307=uat-sea 13308=pro-cn 13309=pro-sea
+# 红线不变:仅 loopback + 只读白名单;PRO 常驻是用户决定(2026-11-09),查询走个人 Archery 账号有审计
 Environment=SQLMUX_BASE_PORT=13306
 Environment=AGENT_ARCHERY_URL=https://archery.yunlu-tech.cn
-ExecStart=/bin/sh -c 'exec /usr/bin/mise exec -- uv run sqlmux serve --envs uat-cn,uat-sea'
+ExecStart=/bin/sh -c 'exec /usr/bin/mise exec -- uv run sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea'
 Restart=on-failure
 RestartSec=3
 NoNewPrivileges=true

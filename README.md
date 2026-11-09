@@ -19,7 +19,7 @@
 | pro-cn | 13308 | pro-cwh-wms-mysql | wms |
 | pro-sea | 13309 | cwhsea-pro-wms-mysql | wms |
 
-PRO 端口默认不启动,`serve --envs` 显式列出才监听。全部仅绑定 127.0.0.1。
+全部仅绑定 127.0.0.1。默认 `serve --envs` 决定监听哪些环境;生产 unit(`deploy/sqlmux.service`)四环境常驻(2026-11-09 用户拍板),PRO 查询走个人 Archery 账号、平台有审计。
 
 ## 运行
 
