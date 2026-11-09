@@ -18,7 +18,9 @@ WRITE_RE = re.compile(
     r"FLUSH|RESET|SET\s+GLOBAL|SET\s+SESSION|KILL|SHUTDOWN)\b",
     re.IGNORECASE,
 )
-USE_RE = re.compile(r"^\s*USE\s+[`\"']?([\w$]+)[`\"']?\s*;?\s*$", re.IGNORECASE)
+USE_RE = re.compile(
+    r"^\s*USE\s+(?:`([^`]+)`|\"([^\"]+)\"|([\w$]+))\s*;?\s*$", re.IGNORECASE
+)
 SET_RE = re.compile(r"^\s*SET\b", re.IGNORECASE)
 # 朴素多语句检测:跳过引号内的分号
 _SPLit_RE = re.compile(r""";(?=(?:[^'"`]*['"`][^'"`]*['"`])*[^'"`]*$)""")
@@ -31,6 +33,14 @@ class GuardError(Exception):
         super().__init__(message)
         self.code = code
         self.message = message
+
+
+def extract_db_name(sql: str) -> str | None:
+    """从 USE 语句提取库名(支持反引号/双引号内任意字符);非 USE 返回 None。"""
+    m = USE_RE.match(sql.strip())
+    if not m:
+        return None
+    return next((g for g in m.groups() if g), None)
 
 
 def classify(sql: str) -> str:
