@@ -100,3 +100,20 @@ class TestGuard:
 
     def test_use_with_leading_comment(self):
         assert extract_db_name("/* c */ USE `other-db`") == "other-db"
+
+
+class TestRewriteForArchery:
+    """Archery 不支持 DESC/DESCRIBE,网关翻译为标准 SHOW COLUMNS。"""
+
+    def test_desc_rewritten(self):
+        from sqlmux.server import rewrite_for_archery
+        assert rewrite_for_archery("DESC shipment_header") == "SHOW COLUMNS FROM shipment_header"
+        assert rewrite_for_archery("desc t") == "SHOW COLUMNS FROM t"
+        assert rewrite_for_archery("DESCRIBE `wms`.`t`") == "SHOW COLUMNS FROM `wms`.`t`"
+        assert rewrite_for_archery("  DESC t;  ") == "SHOW COLUMNS FROM t"
+
+    def test_other_statements_untouched(self):
+        from sqlmux.server import rewrite_for_archery
+        for sql in ["SELECT 1", "SHOW TABLES", "EXPLAIN SELECT 1",
+                    "SELECT * FROM t ORDER BY id DESC"]:
+            assert rewrite_for_archery(sql) == sql
