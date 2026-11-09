@@ -31,6 +31,18 @@ LIMIT_SELECT = 5000
 _BROWSE_RE = re.compile(r"^\s*(SHOW|DESC|DESCRIBE|EXPLAIN|SELECT\s+.*\bFROM\s+information_schema\b)",
                         re.IGNORECASE)
 
+# Archery 平台不支持 DESC/DESCRIBE 语法(「不支持的查询语法类型」),
+# 对外保持标准 MySQL 语义,对内翻译为 SHOW COLUMNS FROM。
+_DESC_RE = re.compile(r"^\s*DESC(?:RIBE)?\s+(.+?)\s*;?\s*$", re.IGNORECASE)
+
+
+def rewrite_for_archery(sql: str) -> str:
+    """把 Archery 不支持的等价语法翻译成其支持的形态(DESC t -> SHOW COLUMNS FROM t)。"""
+    m = _DESC_RE.match(sql)
+    if m:
+        return f"SHOW COLUMNS FROM {m.group(1)}"
+    return sql
+
 _ERR_CODE = {
     "write-not-permitted": 1142,       # ER_TABLEACCESS_DENIED_ERROR
     "multi-statement": 1064,           # ER_PARSE_ERROR
@@ -132,7 +144,7 @@ class GatewayConnection:
             return
 
         limit = LIMIT_BROWSE if _BROWSE_RE.match(sql) else LIMIT_SELECT
-        clean_sql = first_statement(sql)  # 剥注释:Archery 拒绝含块注释的 SQL
+        clean_sql = rewrite_for_archery(first_statement(sql))  # 剥注释 + 平台语法翻译
         try:
             columns, rows = await self.client.query(
                 self.target.instance_name, self.db_name, clean_sql, limit
