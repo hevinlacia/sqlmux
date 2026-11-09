@@ -49,6 +49,16 @@ jdbc:mysql://127.0.0.1:13307/wms?useSSL=false&allowPublicKeyRetrieval=true
 - 不存储数据库凭证;Archery 认证复用 `mysql-archery-query` 链路(Chrome 登录态 > env cookie > hub 密钥库)。
 - PRO 环境显式开启才监听;日志不含凭证。
 
+## 分发给节点（REQ-274）
+
+不拉 git 仓库也能在新机器运行：打源码包上传 hub，节点由 panel worker 自动下载安装。
+
+```bash
+deploy/package.sh                 # → dist/sqlmux-<git-short>.tar.gz，并打印上传命令
+```
+
+manifest 侧声明 `artifact`（见 Agent Panel `.agents/skills/agent-panel/references/workers-api.md`「服务产物分发」）。`source` 型产物在节点仍需 `uv` 与 PyPI 可达。
+
 ## 验证
 
 ```bash
