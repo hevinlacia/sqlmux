@@ -52,6 +52,12 @@ jdbc:mysql://127.0.0.1:13307/wms?useSSL=false&allowPublicKeyRetrieval=true
 - 不存储数据库凭证;Archery 认证复用 `mysql-archery-query` 链路(Chrome 登录态 > env cookie > hub 密钥库)。
 - PRO 环境显式开启才监听;日志不含凭证。
 
+## 运行在 hub 产物上（REQ-274）
+
+`deploy/sqlmux.service` 现在从 `~/.local/share/panel-services/sqlmux/current` 运行
+（panel worker 安装 hub 产物，`current` 符号链接选择当前版本），不再依赖本仓 checkout。
+换版本 = 切 symlink；仍需 `PYTHONPATH=.../current/src`（源码布局）。
+
 ## 分发给节点（REQ-274）
 
 不拉 git 仓库也能在新机器运行：打源码包上传 hub，节点由 panel worker 自动下载安装。
