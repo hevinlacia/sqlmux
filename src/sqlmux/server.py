@@ -17,7 +17,7 @@ import signal
 from . import wire
 from .archery import ArcheryClient, ArcheryError
 from .config import EnvTarget
-from .guard import GuardError, extract_db_name, guard
+from .guard import GuardError, extract_db_name, first_statement, guard
 
 log = logging.getLogger("sqlmux.server")
 
@@ -132,9 +132,10 @@ class GatewayConnection:
             return
 
         limit = LIMIT_BROWSE if _BROWSE_RE.match(sql) else LIMIT_SELECT
+        clean_sql = first_statement(sql)  # 剥注释:Archery 拒绝含块注释的 SQL
         try:
             columns, rows = await self.client.query(
-                self.target.instance_name, self.db_name, sql, limit
+                self.target.instance_name, self.db_name, clean_sql, limit
             )
         except ArcheryError as exc:
             await self._send_payload(1, wire.build_err(1105, f"Archery: {exc}"))
