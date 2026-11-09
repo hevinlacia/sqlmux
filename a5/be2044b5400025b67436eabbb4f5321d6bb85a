@@ -1,0 +1,23 @@
+src/sqlmux/server.py
+  08d731b781a7bb1f 20,135,138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "a5be2044b5400025b67436eabbb4f5321d6bb85a",
+  "prompts": {
+    "08d731b781a7bb1f": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1be06-d4f7-75a5-8707-88d64a308fae",
+        "model": "low-model-auto"
+      },
+      "human_author": "hevinlacia <hevinlacia@gmail.com>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 2,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
