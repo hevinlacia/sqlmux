@@ -1,0 +1,20 @@
+# ~/.config/systemd/user/sqlmux.service — 安装:
+#   cp deploy/sqlmux.service ~/.config/systemd/user/ && systemctl --user daemon-reload
+#   systemctl --user enable --now sqlmux
+[Unit]
+Description=sqlmux MySQL wire protocol gateway (Archery read-only)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/hevin/Developer/tools/sqlmux
+# 红线:仅 loopback;PRO 环境不进 --envs(显式临时开,不落 unit)
+Environment=SQLMUX_BASE_PORT=13306
+Environment=AGENT_ARCHERY_URL=https://archery.yunlu-tech.cn
+ExecStart=/bin/sh -c 'exec /usr/bin/mise exec -- uv run sqlmux serve --envs uat-cn,uat-sea'
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
