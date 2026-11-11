@@ -22,6 +22,10 @@ git archive --format=tar.gz --prefix="sqlmux-${VER}/" -o "$OUT" HEAD
 SHA="$(sha256sum "$OUT" | cut -d' ' -f1)"
 SIZE="$(stat -c%s "$OUT")"
 
+# entry 必须走 query 参数并自行 URL 编码;不能用 --data-urlencode,
+# 否则文本会拼进 tar.gz body 从而损坏产物(sha256 对不上)。
+ENTRY="$(python3 -c "import urllib.parse;print(urllib.parse.quote('PYTHONPATH=src python3 -m sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea',safe=''))")"
+
 cat <<MSG
 打包完成
   file   : $OUT
@@ -30,8 +34,7 @@ cat <<MSG
   size   : $SIZE bytes
 
 上传到 hub(产物落 hub state 目录,不进备份仓):
-  curl -sS -X PUT "$HUB/api/service/artifact?name=sqlmux&version=${VER}&kind=source" \\
-    --data-urlencode "entry=PYTHONPATH=src python3 -m sqlmux serve --envs uat-cn,uat-sea,pro-cn,pro-sea" \\
+  curl -sS -X PUT "$HUB/api/service/artifact?name=sqlmux&version=${VER}&kind=source&entry=${ENTRY}" \\
     -H 'Content-Type: application/gzip' \\
     --data-binary @"$OUT"
 
