@@ -1,0 +1,25 @@
+tests/test_archery_auth.py
+  0396c0804c84f0d1 1-88,90-137,139-169
+src/sqlmux/archery.py
+  0396c0804c84f0d1 6-14,45-47,68,88,101-105,109-110,114-118,128-143,147-149,151-156,174,181-182,190,195-217,219-243,245-284,286-288,290-336,347
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "a659d8f3c91829bf1897ae43039e5fb3541fa522",
+  "prompts": {
+    "0396c0804c84f0d1": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1c8af-fd62-75e4-8aa2-aaace5c77bc5",
+        "model": "low-model-auto"
+      },
+      "human_author": "hevinlacia <hevinlacia@gmail.com>",
+      "messages": [],
+      "total_additions": 321,
+      "total_deletions": 93,
+      "accepted_lines": 327,
+      "overriden_lines": 2
+    }
+  }
+}
